@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 import hu.traileddevice.quizgine.model.Quiz;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class QuizIoGson implements QuizIo {
     private final Gson gson;
@@ -40,7 +41,7 @@ public class QuizIoGson implements QuizIo {
     @Override
     public void save(Quiz quizToSave, File filePath) {
         try {
-            FileWriter fileWriter = new FileWriter(filePath);
+            FileWriter fileWriter = new FileWriter(filePath, StandardCharsets.UTF_8);
             gson.toJson(quizToSave, fileWriter);
             fileWriter.flush();
             fileWriter.close();
@@ -53,7 +54,7 @@ public class QuizIoGson implements QuizIo {
     public Quiz load(File filePath) {
         Quiz fileToLoad = null;
         try {
-            FileReader fileReader = new FileReader(filePath);
+            FileReader fileReader = new FileReader(filePath, StandardCharsets.UTF_8);
             fileToLoad = gson.fromJson(fileReader, Quiz.class);
             fileReader.close();
         } catch (IOException e) {
