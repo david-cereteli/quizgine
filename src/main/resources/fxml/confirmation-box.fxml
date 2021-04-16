@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<!--
+  ~ Quizgine is a quiz engine for building and taking quizzes.
+  ~ Copyright (C) 2021 David Cereteli
+  ~
+  ~ This file is part of Quizgine.
+  ~
+  ~ Quizgine is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Quizgine is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with Quizgine.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="100.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="BOTTOM_CENTER" prefHeight="100.0" prefWidth="200.0">
+         <children>
+            <Text fx:id="questionText" strokeType="OUTSIDE" strokeWidth="0.0" text="Are you sure?" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="70.0">
+         <children>
+            <Button mnemonicParsing="false" onAction="#onYes" text="Yes" />
+            <Button mnemonicParsing="false" onAction="#onNo" text="No" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

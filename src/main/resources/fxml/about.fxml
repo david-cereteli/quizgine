@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<!--
+  ~ Quizgine is a quiz engine for building and taking quizzes.
+  ~ Copyright (C) 2021 David Cereteli
+  ~
+  ~ This file is part of Quizgine.
+  ~
+  ~ Quizgine is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ Quizgine is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with Quizgine.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<VBox alignment="CENTER" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.traileddevice.quizgine.controller.AboutController">
+   <children>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Please find the detailed license information" textAlignment="CENTER" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="and the source code on GitHub:" textAlignment="CENTER" />
+      <Hyperlink onAction="#openRepositoryLink" text="Quizgine repository" textAlignment="CENTER" />
+      <Text layoutX="10.0" layoutY="40.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quizgine" textAlignment="CENTER" />
+      <Text layoutX="10.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Copyright© 2021 David Cereteli" textAlignment="CENTER" />
+   </children>
+   <padding>
+      <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+   </padding>
+</VBox>

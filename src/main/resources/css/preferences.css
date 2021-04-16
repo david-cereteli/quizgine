@@ -1,0 +1,23 @@
+.root {
+    -fx-font-size: 11pt;
+    -dark-green-bg: #2b5329;
+    -dark-red-bg: #680c07;
+    -dark-purple-bg: #520160;
+    -dark-row-alternate-bg: #3f4445;
+}
+
+/* remove horizontal scroll bars */
+.list-view .scroll-bar:horizontal .increment-arrow,
+.list-view .scroll-bar:horizontal .decrement-arrow,
+.list-view .scroll-bar:horizontal .increment-button,
+.list-view .scroll-bar:horizontal .decrement-button {
+    -fx-padding:0;
+}
+
+/* disabled checkbox is still readable*/
+.check-box:disabled {
+    -fx-text-background-color: -darcula-text;
+    -fx-text-fill: -darcula-text;
+    -fx-prompt-text-fill: -darcula-text;
+    -fx-opacity: 1.0;
+}
