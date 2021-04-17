@@ -194,11 +194,13 @@ public class AssessmentController implements Initializable {
     @FXML
     void nextQuestion() {
         questionListView.getSelectionModel().selectNext();
+        questionListView.scrollTo(questionListView.getSelectionModel().getSelectedItem());
     }
 
     @FXML
     void previousQuestion() {
         questionListView.getSelectionModel().selectPrevious();
+        questionListView.scrollTo(questionListView.getSelectionModel().getSelectedItem());
     }
 
     @FXML

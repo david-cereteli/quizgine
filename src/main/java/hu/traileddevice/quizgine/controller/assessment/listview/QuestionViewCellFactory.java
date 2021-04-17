@@ -21,8 +21,10 @@
 package hu.traileddevice.quizgine.controller.assessment.listview;
 
 import hu.traileddevice.quizgine.view.assessment.QuestionView;
+import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
@@ -30,7 +32,22 @@ public class QuestionViewCellFactory implements Callback<ListView<QuestionView>,
 
     @Override
     public ListCell<QuestionView> call(ListView<QuestionView> questionViewList) {
-        ListCell<QuestionView> cell = new QuestionViewCell();
+        ListCell<QuestionView> cell = new ListCell<>();
+        cell.itemProperty().addListener((observableValue, oldItem, newItem) -> {
+            if (newItem != null) {
+                cell.prefWidthProperty()
+                        .bind(DoubleBinding.doubleExpression(questionViewList.maxWidthProperty()).add(-1));
+                String noLineBreak = newItem.getQuestionText().replaceAll("\\R+", "");
+                String numberedText = (cell.getIndex() + 1 + ". ").concat(noLineBreak);
+                cell.setTextOverrun(OverrunStyle.ELLIPSIS);
+                cell.setText(numberedText);
+            }
+        });
+        cell.emptyProperty().addListener((observableValue, wasEmpty, isEmpty) -> {
+            if (isEmpty) {
+                cell.setText(null);
+            }
+        });
         cell.setOnMousePressed((MouseEvent event) -> {
             if (cell.isEmpty()) {
                 event.consume();
@@ -40,4 +57,3 @@ public class QuestionViewCellFactory implements Callback<ListView<QuestionView>,
         return cell;
     }
 }
-

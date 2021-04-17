@@ -22,8 +22,10 @@ package hu.traileddevice.quizgine.controller.editor.listview;
 
 import hu.traileddevice.quizgine.controller.editor.EditorController;
 import hu.traileddevice.quizgine.view.edit.CellDisplayable;
+import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
@@ -36,7 +38,22 @@ public class TruncatedCellFactory implements Callback<ListView<CellDisplayable>,
 
     @Override
     public ListCell<CellDisplayable> call(ListView<CellDisplayable> cellDisplayableListView) {
-        ListCell<CellDisplayable> cell = new TruncatedListCell();
+        ListCell<CellDisplayable> cell = new ListCell<>();
+        cell.itemProperty().addListener((observableValue, oldItem, newItem) -> {
+            if (newItem != null) {
+                cell.prefWidthProperty()
+                        .bind(DoubleBinding.doubleExpression(cellDisplayableListView.maxWidthProperty()).add(-1));
+                String noLineBreak = newItem.getCellContent().replaceAll("\\R+", "");
+                String numberedText = (cell.getIndex() + 1 + ". ").concat(noLineBreak);
+                cell.setTextOverrun(OverrunStyle.ELLIPSIS);
+                cell.setText(numberedText);
+            }
+        });
+        cell.emptyProperty().addListener((observableValue, wasEmpty, isEmpty) -> {
+            if (isEmpty) {
+                cell.setText(null);
+            }
+        });
         cell.setOnMousePressed((MouseEvent event) -> {
             if (cell.isEmpty()) {
                 event.consume();

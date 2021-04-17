@@ -59,6 +59,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class EditorController implements Initializable {
+    @Getter private static final double NEGATIVE_SCROLL_BAR_WIDTH = -10;
     private QuizDisplayable quizDisplayable;
     ObservableList<CellDisplayable> questions;
     ObservableList<CellDisplayable> answers;
@@ -245,7 +246,7 @@ public class EditorController implements Initializable {
     @FXML
     public void deleteQuestion() throws IOException {
         int questionIndexToDelete = questionListView.getSelectionModel().getSelectedIndex();
-        ConfirmationBox confirmationController = loadConfirmationPopup(questionIndexToDelete, "question");
+        ConfirmationBox confirmationController = getDeleteConfirmationPopup(questionIndexToDelete, "question");
         if (confirmationController.isConfirmed()) {
             questions.remove(questionIndexToDelete);
             editorLayout.setCenter(null);
@@ -267,7 +268,7 @@ public class EditorController implements Initializable {
     @FXML
     public void deleteAnswer() throws IOException {
         int answerIndexToDelete = answerListView.getSelectionModel().getSelectedIndex();
-        ConfirmationBox confirmationController = loadConfirmationPopup(answerIndexToDelete, "answer");
+        ConfirmationBox confirmationController = getDeleteConfirmationPopup(answerIndexToDelete, "answer");
         if (confirmationController.isConfirmed()) {
             answers.remove(answerIndexToDelete);
             editorLayout.setCenter(null);
@@ -276,7 +277,7 @@ public class EditorController implements Initializable {
         }
     }
 
-    private ConfirmationBox loadConfirmationPopup(int indexToDelete, String type) throws IOException {
+    private ConfirmationBox getDeleteConfirmationPopup(int indexToDelete, String type) throws IOException {
         Stage editorStage = (Stage) (editorLayout.getScene()).getWindow();
         ConfirmationBox confirmationController =
                 new ConfirmationBox(editorStage, String.format("Delete %s #%d ?", type, indexToDelete + 1));
@@ -308,6 +309,7 @@ public class EditorController implements Initializable {
     }
 
     private void setupLoadedQuiz() {
+        editorLayout.setCenter(null);
         questions = FXCollections.observableList(quizDisplayable.getQuestions()); // original list is updated!
         questionListView.setItems(questions);
         isQuizLoaded.set(true);

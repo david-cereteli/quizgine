@@ -21,8 +21,11 @@
 package hu.traileddevice.quizgine.controller.assessment.checkbox;
 
 import hu.traileddevice.quizgine.view.assessment.AnswerView;
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -38,8 +41,11 @@ public class AnswerCheckGroup extends VBox {
     private final BooleanProperty shouldShowSolvedHighlight;
     @Getter private ObservableList<AnswerView> answers;
     private final List<CheckBox> checkBoxes;
+    private final DoubleProperty checkGroupWidth;
 
     public AnswerCheckGroup(BooleanProperty isSubmitted) {
+        checkGroupWidth = new SimpleDoubleProperty();
+        checkGroupWidth.bind(DoubleBinding.doubleExpression(this.maxWidthProperty().add(-1)));
         checkBoxes = new ArrayList<>();
         shouldShowSolvedHighlight = new SimpleBooleanProperty();
         shouldShowSolvedHighlight.bind(isSubmitted);
@@ -64,7 +70,7 @@ public class AnswerCheckGroup extends VBox {
             CheckBox checkBox = new CheckBox(answer.getAnswerText());
             checkBox.setPadding(new Insets(5, 10, 5, 10));
             checkBox.setWrapText(true);
-            checkBox.minWidthProperty().bind(this.maxWidthProperty());
+            checkBox.prefWidthProperty().bind(checkGroupWidth); // solution to intermittent wrap issue (while maintaining length)
             checkBox.selectedProperty().bindBidirectional(answer.isMarkedProperty());
             setBackground(checkBox, answer, rowIndex);
             checkBox.disableProperty().bind(shouldShowSolvedHighlight);
