@@ -25,6 +25,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class PopupStage extends Stage {
+    private double customWidth;
 
     public PopupStage(Stage parentStage) {
         this.setResizable(false);
@@ -32,9 +33,17 @@ public class PopupStage extends Stage {
         centerOnParentStage(parentStage);
     }
 
+    public PopupStage(Stage parentStage, double width) {
+        this.setResizable(false);
+        this.initModality(Modality.APPLICATION_MODAL);
+        this.customWidth = width;
+        this.setMinWidth(width);
+        centerOnParentStage(parentStage);
+    }
+
     private void centerOnParentStage(Stage parentStage) {
         ChangeListener<Number> widthListener = (ignoredObservable, ignoredOldValue, newValue) -> {
-            double currentStageWidth = newValue.doubleValue();
+            double currentStageWidth = customWidth != 0 ? customWidth : newValue.doubleValue();
             this.setX(parentStage.getX() + parentStage.getWidth() / 2.0 - currentStageWidth / 2.0);
         };
         ChangeListener<Number> heightListener = (ignoredObservable, ignoredOldValue, newValue) -> {

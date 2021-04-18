@@ -51,6 +51,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import lombok.Getter;
 
 import java.io.File;
@@ -154,7 +156,8 @@ public class EditorController implements Initializable {
 
     @FXML
     private void exitApplication() {
-        Platform.exit();
+        Window window = editorLayout.getScene().getWindow();
+        window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
     @FXML
@@ -172,6 +175,7 @@ public class EditorController implements Initializable {
 
     @FXML
     private void backToMain() throws IOException {
+        if (rethinkChoice("Are you sure you wish to leave the editor?")) return;
         Scene scene = editorLayout.getScene();
         Stage primaryStage = (Stage) scene.getWindow();
         primaryStage.setTitle("Quizgine");
@@ -279,18 +283,10 @@ public class EditorController implements Initializable {
 
     private ConfirmationBox getDeleteConfirmationPopup(int indexToDelete, String type) throws IOException {
         Stage editorStage = (Stage) (editorLayout.getScene()).getWindow();
-        ConfirmationBox confirmationController =
+        ConfirmationBox confirmationBox =
                 new ConfirmationBox(editorStage, String.format("Delete %s #%d ?", type, indexToDelete + 1));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/confirmation-box.fxml"));
-        loader.setController(confirmationController);
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-        DarculaFX.applyDarculaStyle(root);
-        Main.applyStylePreferences(scene);
-        confirmationController.setTitle("Confirmation");
-        confirmationController.setScene(scene);
-        confirmationController.showAndWait();
-        return confirmationController;
+        confirmationBox.showAndWait();
+        return confirmationBox;
     }
 
     private void loadAddOrEdit(String fxmlPath) throws IOException {
@@ -303,9 +299,18 @@ public class EditorController implements Initializable {
     }
 
     @FXML
-    private void createNewQuiz() {
+    private void createNewQuiz() throws IOException {
+        if (rethinkChoice("Are you sure you wish to create a new Quiz?")) return;
         quizDisplayable = Main.getQuizManager().createNewQuizForEditing();
         setupLoadedQuiz();
+    }
+
+    private boolean rethinkChoice(String confirmText) throws IOException {
+        if (quizDisplayable == null) return false;
+        Stage editorStage = (Stage) (editorLayout.getScene()).getWindow();
+        ConfirmationBox confirmationBox = new ConfirmationBox(editorStage, confirmText, 350);
+        confirmationBox.showAndWait();
+        return !confirmationBox.isConfirmed();
     }
 
     private void setupLoadedQuiz() {
@@ -316,17 +321,10 @@ public class EditorController implements Initializable {
     }
 
     @FXML
-    public void loadQuiz() {
+    public void loadQuiz() throws IOException {
+        if (rethinkChoice("Are you sure you wish to load a Quiz?")) return;
         Stage editorStage = (Stage) (editorLayout.getScene()).getWindow();
-        String directoryPath = System.getProperty("user.dir").concat(File.separator).concat("save");
-        File baseDirectory = new File(directoryPath);
-        baseDirectory.mkdir(); // this IS required
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setInitialDirectory(baseDirectory);
-        fileChooser.setTitle("Load Quiz");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter(Main.getQuizManager().getFileExtension()[0],
-                        Main.getQuizManager().getFileExtension()[1]));
+        FileChooser fileChooser = getFileChooser("Load Quiz");
         File file = fileChooser.showOpenDialog(editorStage);
         if (file != null) {
             quizDisplayable = Main.getQuizManager().loadQuizForEditing(file);
@@ -337,19 +335,24 @@ public class EditorController implements Initializable {
     @FXML
     public void saveQuiz() {
         Stage editorStage = (Stage) (editorLayout.getScene()).getWindow();
+        FileChooser fileChooser = getFileChooser("Save Quiz");
+        File file = fileChooser.showSaveDialog(editorStage);
+        if (quizDisplayable != null && file != null) {
+            Main.getQuizManager().saveQuiz(quizDisplayable, file);
+        }
+    }
+
+    private FileChooser getFileChooser(String windowTitle) {
         String directoryPath = System.getProperty("user.dir").concat(File.separator).concat("save");
         File baseDirectory = new File(directoryPath);
         baseDirectory.mkdir(); // only creates it if not exists
         FileChooser fileChooser = new FileChooser();
         fileChooser.setInitialDirectory(baseDirectory);
-        fileChooser.setTitle("Save Quiz");
-        fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter(Main.getQuizManager().getFileExtension()[0],
+        fileChooser.setTitle(windowTitle);
+        fileChooser.getExtensionFilters()
+                .add(new FileChooser.ExtensionFilter(Main.getQuizManager().getFileExtension()[0],
                         Main.getQuizManager().getFileExtension()[1]));
-        File file = fileChooser.showSaveDialog(editorStage);
-        if (quizDisplayable != null && file != null) {
-            Main.getQuizManager().saveQuiz(quizDisplayable, file);
-        }
+        return fileChooser;
     }
 
 }

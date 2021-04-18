@@ -22,18 +22,26 @@ package hu.traileddevice.quizgine.controller;
 
 import com.github.mouse0w0.darculafx.DarculaFX;
 import hu.traileddevice.quizgine.Main;
+import hu.traileddevice.quizgine.controller.stage.ConfirmationBox;
 import hu.traileddevice.quizgine.controller.stage.PopupStage;
 import javafx.application.Platform;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class MainController {
+public class MainController implements Initializable {
+    private Window window;
 
     @FXML
     private BorderPane mainLayout;
@@ -74,4 +82,29 @@ public class MainController {
         scene.setRoot(root);
         primaryStage.setScene(scene);
     }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        Platform.runLater(()-> {
+            if (Main.isJustStarted()) {
+                Main.setJustStarted(false);
+                window = mainLayout.getScene().getWindow();
+                window.addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, this::exitApplicationEvent);
+            }
+        });
+    }
+
+    private <T extends Event> void exitApplicationEvent(T exitEvent) {
+        try {
+            ConfirmationBox confirmationBox =
+                    new ConfirmationBox((Stage) window, "Are you sure you wish to leave?", 300);
+            confirmationBox.showAndWait();
+            if (!confirmationBox.isConfirmed()) {
+                exitEvent.consume();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

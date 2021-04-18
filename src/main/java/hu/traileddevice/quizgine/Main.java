@@ -30,12 +30,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 
 public class Main extends Application {
     @Getter private static HostServices services;
     @Getter private static final QuizManager quizManager = QuizManager.getInstance(new QuizIoGson());
+    @Getter @Setter private static boolean justStarted = true;
 
     public static void main(String[] args) {
         launch(args);

@@ -20,12 +20,18 @@
 
 package hu.traileddevice.quizgine.controller.stage;
 
+import com.github.mouse0w0.darculafx.DarculaFX;
+import hu.traileddevice.quizgine.Main;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.Getter;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -36,9 +42,30 @@ public class ConfirmationBox extends PopupStage implements Initializable {
     @FXML
     private Text questionText;
 
-    public ConfirmationBox(Stage parentStage, String text) {
+    public ConfirmationBox(Stage parentStage, String text) throws IOException {
         super(parentStage);
         this.askText = text;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/confirmation-box.fxml"));
+        loader.setController(this);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        DarculaFX.applyDarculaStyle(root);
+        Main.applyStylePreferences(scene);
+        this.setTitle("Confirmation");
+        this.setScene(scene);
+    }
+
+    public ConfirmationBox(Stage parentStage, String text, double width) throws IOException {
+        super(parentStage, width);
+        this.askText = text;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/confirmation-box.fxml"));
+        loader.setController(this);
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+        DarculaFX.applyDarculaStyle(root);
+        Main.applyStylePreferences(scene);
+        this.setTitle("Confirmation");
+        this.setScene(scene);
     }
 
     @Override

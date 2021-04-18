@@ -26,6 +26,7 @@ import hu.traileddevice.quizgine.controller.assessment.checkbox.AnswerCheckGroup
 import hu.traileddevice.quizgine.controller.assessment.changelistener.QuizCompleteListener;
 import hu.traileddevice.quizgine.controller.assessment.changelistener.ShowIfSelected;
 import hu.traileddevice.quizgine.controller.assessment.listview.QuestionViewCellFactory;
+import hu.traileddevice.quizgine.controller.stage.ConfirmationBox;
 import hu.traileddevice.quizgine.controller.stage.PopupStage;
 import hu.traileddevice.quizgine.view.assessment.AnswerView;
 import hu.traileddevice.quizgine.view.assessment.QuestionView;
@@ -47,6 +48,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 import lombok.Getter;
 
 import java.io.File;
@@ -102,7 +105,8 @@ public class AssessmentController implements Initializable {
 
     @FXML
     void exitApplication() {
-        Platform.exit();
+        Window window = assessmentLayout.getScene().getWindow();
+        window.fireEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
     @FXML
@@ -120,6 +124,7 @@ public class AssessmentController implements Initializable {
 
     @FXML
     void backToMain() throws IOException {
+        if (rethinkChoice("Are you sure you wish to abandon your progress?")) return;
         Scene scene = assessmentLayout.getScene();
         Stage primaryStage = (Stage) scene.getWindow();
         primaryStage.setTitle("Quizgine");
@@ -128,8 +133,17 @@ public class AssessmentController implements Initializable {
         primaryStage.setScene(scene);
     }
 
+    private boolean rethinkChoice(String confirmText) throws IOException {
+        if (quizView == null || isSubmitted.get()) return false;
+        Stage editorStage = (Stage) (assessmentLayout.getScene()).getWindow();
+        ConfirmationBox confirmationBox = new ConfirmationBox(editorStage, confirmText, 350);
+        confirmationBox.showAndWait();
+        return !confirmationBox.isConfirmed();
+    }
+
     @FXML
-    void loadQuiz() {
+    void loadQuiz() throws IOException {
+        if (rethinkChoice("Are you sure you wish to load a new Quiz?")) return;
         Stage editorStage = (Stage) (assessmentLayout.getScene()).getWindow();
         String directoryPath = System.getProperty("user.dir").concat(File.separator).concat("save");
         File baseDirectory = new File(directoryPath);
