@@ -21,8 +21,7 @@
 package hu.traileddevice.quizgine.controller.editor;
 
 import hu.traileddevice.quizgine.view.edit.AnswerDisplayable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -62,18 +61,11 @@ public class EditAnswer implements Initializable, EditorLink {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        ChangeListener<Number> isRenderedListener = new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-                answerDisplayable = (AnswerDisplayable) editorController.answerListView.getSelectionModel().getSelectedItem();
-                answerText.setText(answerDisplayable.getAnswerText());
-                isCorrect.setSelected(answerDisplayable.isCorrect());
-                editLayout.widthProperty().removeListener(this);
-            }
-        };
-
-        editLayout.widthProperty().addListener(isRenderedListener);
+        Platform.runLater(() -> {
+            answerDisplayable = (AnswerDisplayable) editorController.answerListView.getSelectionModel().getSelectedItem();
+            answerText.setText(answerDisplayable.getAnswerText());
+            isCorrect.setSelected(answerDisplayable.isCorrect());
+        });
     }
 
     @FXML
