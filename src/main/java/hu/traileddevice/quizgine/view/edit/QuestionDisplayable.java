@@ -51,11 +51,6 @@ public class QuestionDisplayable implements CellDisplayable {
     }
 
     @Override
-    public String getCellContent() {
-        return questionText;
-    }
-
-    @Override
     public String getContent() {
         return questionText;
     }

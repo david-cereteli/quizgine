@@ -21,7 +21,9 @@
 package hu.traileddevice.quizgine.controller.editor.listview;
 
 import hu.traileddevice.quizgine.controller.editor.EditorController;
+import hu.traileddevice.quizgine.view.edit.AnswerDisplayable;
 import hu.traileddevice.quizgine.view.edit.CellDisplayable;
+import hu.traileddevice.quizgine.view.edit.QuestionDisplayable;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
@@ -30,6 +32,9 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
 public class TruncatedCellFactory implements Callback<ListView<CellDisplayable>, ListCell<CellDisplayable>> {
+    private static final String CORRECT_STYLE = "correctAnswer";
+    private static final String INCOMPLETE_STYLE = "incompleteQuestion";
+    private static final String[] STYLE_CLASSES = {CORRECT_STYLE, INCOMPLETE_STYLE};
     private final EditorController editorController;
 
     public TruncatedCellFactory(EditorController editorController) {
@@ -43,15 +48,20 @@ public class TruncatedCellFactory implements Callback<ListView<CellDisplayable>,
             if (newItem != null) {
                 cell.prefWidthProperty()
                         .bind(DoubleBinding.doubleExpression(cellDisplayableListView.maxWidthProperty()).add(-1));
-                String noLineBreak = newItem.getCellContent().replaceAll("\\R+", "");
-                String numberedText = (cell.getIndex() + 1 + ". ").concat(noLineBreak);
-                cell.setTextOverrun(OverrunStyle.ELLIPSIS);
-                cell.setText(numberedText);
+                cell.setText(generateContent(cell, newItem));
+                String styleToApply = generateBackground(newItem);
+                if (styleToApply != null) {
+                    cell.getStyleClass().add(styleToApply);
+                } else {
+                    cell.getStyleClass().removeAll(STYLE_CLASSES);
+                }
             }
+            refreshQuestionListIfAnswersChanged(oldItem, newItem);
         });
         cell.emptyProperty().addListener((observableValue, wasEmpty, isEmpty) -> {
             if (isEmpty) {
                 cell.setText(null);
+                cell.getStyleClass().removeAll(STYLE_CLASSES);
             }
         });
         cell.setOnMousePressed((MouseEvent event) -> {
@@ -63,5 +73,34 @@ public class TruncatedCellFactory implements Callback<ListView<CellDisplayable>,
         });
         return cell;
     }
+
+    private String generateContent(ListCell<CellDisplayable> cell, CellDisplayable newItem) {
+        String noLineBreak = newItem.getContent().replaceAll("\\R+", "");
+        String numberedText = (cell.getIndex() + 1 + ". ").concat(noLineBreak);
+        cell.setTextOverrun(OverrunStyle.ELLIPSIS);
+        return numberedText;
+    }
+
+    private String generateBackground(CellDisplayable cellDisplayable) {
+        if (cellDisplayable instanceof AnswerDisplayable) {
+            AnswerDisplayable answer = (AnswerDisplayable) cellDisplayable;
+            if (answer.isCorrect()) {
+                return CORRECT_STYLE;
+            }
+        } else if (cellDisplayable instanceof QuestionDisplayable) {
+            QuestionDisplayable question = (QuestionDisplayable) cellDisplayable;
+            if (question.getAnswers().stream().noneMatch(answer -> ((AnswerDisplayable)answer).isCorrect())) {
+                return INCOMPLETE_STYLE;
+            }
+        }
+        return null;
+    }
+
+    private void refreshQuestionListIfAnswersChanged(CellDisplayable oldItem, CellDisplayable newItem) {
+        if (newItem instanceof AnswerDisplayable || oldItem instanceof AnswerDisplayable) {
+            editorController.getQuestionListView().refresh();
+        }
+    }
+
 }
 

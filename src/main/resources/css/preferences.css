@@ -1,8 +1,11 @@
 .root {
     -fx-font-size: 11pt;
+    -lighter-dark-green-bg: #30632e;
     -dark-green-bg: #2b5329;
     -dark-red-bg: #680c07;
     -dark-purple-bg: #520160;
+    -lighter-dark-gold-bg: #695515;
+    -dark-gold-bg: #574712;
     -dark-row-alternate-bg: #3f4445;
 }
 
@@ -20,4 +23,20 @@
     -fx-text-fill: -darcula-text;
     -fx-prompt-text-fill: -darcula-text;
     -fx-opacity: 1.0;
+}
+
+.correctAnswer {
+    -fx-background-color: #4b6eaf,  -dark-green-bg;
+}
+
+.correctAnswer:focused {
+    -fx-background-color: #4b6eaf,  -lighter-dark-green-bg;
+}
+
+.incompleteQuestion {
+    -fx-background-color: #4b6eaf,  -dark-gold-bg;
+}
+
+.incompleteQuestion:focused {
+    -fx-background-color: #4b6eaf,  -lighter-dark-gold-bg;
 }

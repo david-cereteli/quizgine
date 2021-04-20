@@ -21,6 +21,5 @@
 package hu.traileddevice.quizgine.view.edit;
 
 public interface CellDisplayable {
-    String getCellContent();
     String getContent();
 }

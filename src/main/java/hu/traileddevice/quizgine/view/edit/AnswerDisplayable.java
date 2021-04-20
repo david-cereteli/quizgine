@@ -38,11 +38,6 @@ public class AnswerDisplayable implements CellDisplayable {
     }
 
     @Override
-    public String getCellContent() {
-        return String.format("%s: %s", (isCorrect ? "T" : "F"), answerText);
-    }
-
-    @Override
     public String getContent() {
         return answerText;
     }
