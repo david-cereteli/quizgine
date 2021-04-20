@@ -48,7 +48,7 @@ public class QuizView {
     }
 
     private boolean isAnswerCorrect(AnswerView answer) {
-        return (answer.getIsMarked() && answer.getIsCorrect()) || (!answer.getIsMarked());
+        return (answer.getIsMarked() && answer.getIsCorrect()) || (!answer.getIsMarked() && !answer.getIsCorrect());
     }
 
     public void setIsComplete(boolean value) {
