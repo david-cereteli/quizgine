@@ -64,12 +64,6 @@ public class QuestionViewCellFactory implements Callback<ListView<QuestionView>,
                 cell.getStyleClass().removeAll(STYLE_CLASSES);
             }
         });
-        cell.setOnMousePressed((MouseEvent event) -> {
-            if (cell.isEmpty()) {
-                event.consume();
-                questionViewList.getSelectionModel().clearSelection();
-            }
-        });
         return cell;
     }
 
