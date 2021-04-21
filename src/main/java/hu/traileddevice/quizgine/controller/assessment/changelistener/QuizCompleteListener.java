@@ -50,5 +50,6 @@ public class QuizCompleteListener implements ChangeListener<Boolean> {
                 quizView.setIsComplete(false);
             }
         }
+        assessmentController.getQuestionListView().refresh();
     }
 }

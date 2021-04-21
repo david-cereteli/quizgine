@@ -31,7 +31,6 @@ import hu.traileddevice.quizgine.controller.stage.PopupStage;
 import hu.traileddevice.quizgine.view.assessment.AnswerView;
 import hu.traileddevice.quizgine.view.assessment.QuestionView;
 import hu.traileddevice.quizgine.view.assessment.QuizView;
-import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -60,7 +59,8 @@ import java.util.ResourceBundle;
 public class AssessmentController implements Initializable {
     @Getter private QuizView quizView;
     private static final int VERTICAL_SCROLLBAR_MODIFIER = 50;
-    private BooleanProperty isQuizLoaded, isQuizComplete, isSubmitted;
+    private BooleanProperty isQuizLoaded, isQuizComplete;
+    @Getter private BooleanProperty isSubmitted;
     @Getter private BooleanProperty isFirstQuestion, isLastQuestion;
     @Getter ScrollPane scrollPane;
 
@@ -98,7 +98,7 @@ public class AssessmentController implements Initializable {
                         , isQuizLoaded, isQuizComplete, scoreLabel.textProperty()));
         questionText = new Label();
         questionText.setPadding(new Insets(0, 20, 50, 20));
-        questionListView.setCellFactory(new QuestionViewCellFactory());
+        questionListView.setCellFactory(new QuestionViewCellFactory(this));
         questionListView.getSelectionModel().selectedItemProperty().addListener(new ShowIfSelected(this));
         answerCheckGroup = new AnswerCheckGroup(isSubmitted);
     }
@@ -222,6 +222,7 @@ public class AssessmentController implements Initializable {
         double score = quizView.getScore();
         scoreLabel.setText(getPercentageScore(score));
         isSubmitted.set(true);
+        questionListView.refresh();
     }
 
     private String getPercentageScore(double score) {

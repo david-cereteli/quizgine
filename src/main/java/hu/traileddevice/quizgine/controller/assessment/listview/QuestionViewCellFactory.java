@@ -20,6 +20,7 @@
 
 package hu.traileddevice.quizgine.controller.assessment.listview;
 
+import hu.traileddevice.quizgine.controller.assessment.AssessmentController;
 import hu.traileddevice.quizgine.view.assessment.QuestionView;
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.control.ListCell;
@@ -29,6 +30,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
 public class QuestionViewCellFactory implements Callback<ListView<QuestionView>, ListCell<QuestionView>> {
+    private static final String INCORRECT_STYLE = "incorrectQuestion";
+    private static final String COMPLETE_STYLE = "correctAnswer";
+    private static final String[] STYLE_CLASSES = {INCORRECT_STYLE, COMPLETE_STYLE};
+    private final AssessmentController assessmentController;
+
+    public QuestionViewCellFactory(AssessmentController assessmentController) {
+        this.assessmentController = assessmentController;
+    }
 
     @Override
     public ListCell<QuestionView> call(ListView<QuestionView> questionViewList) {
@@ -41,11 +50,18 @@ public class QuestionViewCellFactory implements Callback<ListView<QuestionView>,
                 String numberedText = (cell.getIndex() + 1 + ". ").concat(noLineBreak);
                 cell.setTextOverrun(OverrunStyle.ELLIPSIS);
                 cell.setText(numberedText);
+                String styleToApply = generateBackground(newItem);
+                if (styleToApply != null) {
+                    cell.getStyleClass().add(styleToApply);
+                } else {
+                    cell.getStyleClass().removeAll(STYLE_CLASSES);
+                }
             }
         });
         cell.emptyProperty().addListener((observableValue, wasEmpty, isEmpty) -> {
             if (isEmpty) {
                 cell.setText(null);
+                cell.getStyleClass().removeAll(STYLE_CLASSES);
             }
         });
         cell.setOnMousePressed((MouseEvent event) -> {
@@ -55,5 +71,14 @@ public class QuestionViewCellFactory implements Callback<ListView<QuestionView>,
             }
         });
         return cell;
+    }
+
+    private String generateBackground(QuestionView questionView) {
+        if (assessmentController.getIsSubmitted().get()) {
+            if (!questionView.isAnsweredCorrectly()) return INCORRECT_STYLE;
+        } else {
+            if (questionView.getIsComplete()) return COMPLETE_STYLE;
+        }
+        return null;
     }
 }

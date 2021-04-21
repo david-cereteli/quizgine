@@ -3,6 +3,7 @@
     -lighter-dark-green-bg: #30632e;
     -dark-green-bg: #2b5329;
     -dark-red-bg: #680c07;
+    -lighter-dark-red-bg: #7a0d07;
     -dark-purple-bg: #520160;
     -lighter-dark-gold-bg: #695515;
     -dark-gold-bg: #574712;
@@ -39,4 +40,12 @@
 
 .incompleteQuestion:focused {
     -fx-background-color: #4b6eaf,  -lighter-dark-gold-bg;
+}
+
+.incorrectQuestion {
+    -fx-background-color: #4b6eaf,  -dark-red-bg;
+}
+
+.incorrectQuestion:focused {
+    -fx-background-color: #4b6eaf,  -lighter-dark-red-bg;
 }

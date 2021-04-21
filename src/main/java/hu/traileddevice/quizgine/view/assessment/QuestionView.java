@@ -66,4 +66,10 @@ public class QuestionView {
         return isComplete;
     }
 
+    public boolean isAnsweredCorrectly() {
+        return getAnswers().stream()
+                .noneMatch(answer -> (answer.getIsCorrect() && !answer.getIsMarked())
+                        || (!answer.getIsCorrect() && answer.getIsMarked()));
+    }
+
 }
